@@ -14,15 +14,15 @@ This repository contains a SourceMod plugin called **RoundTime** that allows ins
 
 ### Core Technologies
 - **Language**: SourcePawn (.sp files)
-- **Platform**: SourceMod 1.11+ (targeting 1.11.0-git6917)
-- **Build Tool**: SourceKnight (modern SourceMod build system)
-- **Compiler**: SourceMod spcomp (managed by SourceKnight)
+- **Platform**: SourceMod 1.12+ (targeting 1.12.x)
+- **Build Tool**: Native GitHub Actions workflow (no external build tool)
+- **Compiler**: SourceMod spcomp (installed via `rumblefrog/setup-sp`)
 
-### Build System (SourceKnight)
-- Configuration file: `sourceknight.yaml`
-- Build command: Uses GitHub Actions with `maxime1907/action-sourceknight@v1`
+### Build System (GitHub Actions)
+- Configuration file: `.github/workflows/ci.yml`
+- Build command: `spcomp` is installed via `rumblefrog/setup-sp@v1.3.1` and invoked directly
 - Output directory: `/addons/sourcemod/plugins` (produces `.smx` files)
-- Dependencies automatically downloaded (SourceMod itself)
+- No external plugin dependencies (only stock SourceMod includes)
 
 ### CI/CD Pipeline
 - Automated builds on push/PR via GitHub Actions (`.github/workflows/ci.yml`)
@@ -34,7 +34,6 @@ This repository contains a SourceMod plugin called **RoundTime** that allows ins
 ```
 ├── addons/sourcemod/scripting/
 │   └── RoundTime.sp                 # Main plugin source code
-├── sourceknight.yaml               # Build configuration
 ├── .github/
 │   ├── workflows/ci.yml            # CI/CD pipeline
 │   └── dependabot.yml             # Dependency updates
@@ -112,19 +111,14 @@ public void OnPluginEnd() {
 
 ## Testing & Validation
 
-### Local Testing (if SourceKnight is available)
+### Local Testing (if the SourceMod SDK is available)
 ```bash
-# Install SourceKnight (may require specific Python version)
-pip install sourceknight
-
-# Build the plugin
-sourceknight build
-
-# Check output in .sourceknight/package/
+# Compile with spcomp directly (matches CI)
+spcomp -o addons/sourcemod/plugins/RoundTime.smx addons/sourcemod/scripting/RoundTime.sp
 ```
 
 ### GitHub Actions Testing
-- All builds are automatically tested on Ubuntu 24.04
+- All builds are automatically tested on Ubuntu (latest) using `rumblefrog/setup-sp`
 - Failed builds will prevent merges
 - Artifacts are generated for manual testing
 
